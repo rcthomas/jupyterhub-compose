@@ -1,0 +1,31 @@
+services:
+  announcement:
+    environment:
+      JUPYTERHUB_API_TOKEN_FILE: /run/secrets/announcement_api_token
+      JUPYTERHUB_API_URL: http://jupyterhub:8081/hub/api
+    image: announcement
+    secrets:
+      - announcement_api_token
+  jupyterhub:
+    environment:
+      CONFIGPROXY_AUTH_TOKEN_FILE: /run/secrets/configproxy_auth_token
+      ANNOUNCEMENT_API_TOKEN_FILE: /run/secrets/announcement_api_token
+    image: hub
+    secrets:
+      - announcement_api_token
+      - configproxy_auth_token
+    volumes: 
+      - ${PWD}/hub/jupyterhub_config.py:/srv/jupyterhub/jupyterhub_config.py
+  proxy:
+    environment:
+      CONFIGPROXY_AUTH_TOKEN_FILE: /run/secrets/configproxy_auth_token
+    image: jupyterhub/configurable-http-proxy
+    ports:
+      - "8000:8000"
+    secrets:
+      - configproxy_auth_token
+secrets:
+  configproxy_auth_token:
+    file: secrets/configproxy-auth-token.txt
+  announcement_api_token:
+    file: secrets/announcement-api-token.txt
