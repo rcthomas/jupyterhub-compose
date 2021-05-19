@@ -6,16 +6,46 @@ services:
     image: announcement
     secrets:
       - announcement_api_token
+  images:
+    environment:
+      JUPYTERHUB_API_TOKEN_FILE: /run/secrets/images_api_token
+      JUPYTERHUB_API_URL: http://jupyterhub:8081/hub/api
+      SHIFTER_API_TOKEN_FILE: /run/secrets/shifter_api_token
+      SHIFTER_API_HOST: http://shifter:8000
+    image: images
+    secrets:
+      - images_api_token
+      - shifter_api_token
   jupyterhub:
     environment:
-      CONFIGPROXY_AUTH_TOKEN_FILE: /run/secrets/configproxy_auth_token
       ANNOUNCEMENT_API_TOKEN_FILE: /run/secrets/announcement_api_token
+      CONFIGPROXY_AUTH_TOKEN_FILE: /run/secrets/configproxy_auth_token
+      IMAGES_API_TOKEN_FILE: /run/secrets/images_api_token
+      PROFILE_MANAGER_API_TOKEN_FILE: /run/secrets/profile_manager_api_token
+      PROFILES_API_TOKEN_FILE: /run/secrets/profiles_api_token
     image: hub
     secrets:
       - announcement_api_token
       - configproxy_auth_token
+      - images_api_token
+      - profile_manager_api_token
+      - profiles_api_token
     volumes: 
       - ${PWD}/hub/jupyterhub_config.py:/srv/jupyterhub/jupyterhub_config.py
+  profile-manager:
+    environment:
+      JUPYTERHUB_API_TOKEN_FILE: /run/secrets/profile_manager_api_token
+      JUPYTERHUB_API_URL: http://jupyterhub:8081/hub/api
+    image: profile-manager
+    secrets:
+      - profile_manager_api_token
+  profiles:
+    environment:
+      JUPYTERHUB_API_TOKEN_FILE: /run/secrets/profiles_api_token
+      JUPYTERHUB_API_URL: http://jupyterhub:8081/hub/api
+    image: profiles
+    secrets:
+      - profiles_api_token
   proxy:
     environment:
       CONFIGPROXY_AUTH_TOKEN_FILE: /run/secrets/configproxy_auth_token
@@ -24,8 +54,20 @@ services:
       - "8000:8000"
     secrets:
       - configproxy_auth_token
+  shifter:
+    image: shifter
+    secrets:
+      - configproxy_auth_token
 secrets:
-  configproxy_auth_token:
-    file: secrets/configproxy-auth-token.txt
   announcement_api_token:
     file: secrets/announcement-api-token.txt
+  configproxy_auth_token:
+    file: secrets/configproxy-auth-token.txt
+  images_api_token:
+    file: secrets/images-api-token.txt
+  profile_manager_api_token:
+    file: secrets/profile-manager-api-token.txt
+  profiles_api_token:
+    file: secrets/profiles-api-token.txt
+  shifter_api_token:
+    file: secrets/shifter-api-token.txt

@@ -1,0 +1,111 @@
+{% extends "page.html" %}
+
+{% block stylesheet %}
+{{ super() }}
+<style>
+.scrollable-menu {
+    height: auto;
+    max-height: 200px;
+    overflow-x: hidden;
+}
+</style>
+{% endblock %}
+
+{% block main %}
+
+<div class="container">
+  <div class="row">
+    <form id="delete-profile" class="col-md-offset-3 col-md-6">
+      <div class="form-group">
+        <div class="text-center">
+          <button type="submit" class="btn btn-lg btn-jupyter">
+            Clear Shifter selection
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div class="row">
+    <div class="col-md-offset-3 col-md-6">
+      <dl>
+        <dt>Your selected Shifter image:</dt>
+        <dd id="selected-image">None</dt>
+      </dl>
+    </div>
+  </div>
+
+  <div class="row">
+    <form id="update-profile" class="col-md-offset-3 col-md-6">
+      <div class="form-group">
+        <label for="change-image">Change your Shifter image:</label>
+        <div class="input-group">
+          <input id="change-image" class="form-control" list="images" autocomplete="off" disabled 
+          placeholder="Please wait, loading images...">
+          <span class="input-group-btn">
+            <button type="submit" class="btn btn-jupyter">change</button>
+          </span>
+        </div>
+        <small id="change-image-note" class="form-text text-muted">
+          If you wish to change your selected image, pick a new one and click the "change" button.
+          When you are done, simply return to the Home page to use your selected image.
+        </small>
+        <datalist id="images">
+        </datalist>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block script %}
+{{ super() }}
+<script type="text/javascript">
+
+$.get("/services/profiles/user/{{user.name}}", function(data) {
+  $("#selected-image").html(data["image"]);
+});
+
+$.get("/services/images/user/{{user.name}}", function(data) {
+  var images = data["images"];
+  var content = "";
+  $.each(images, function(index, value) {
+    content += `<option value="${value}">\n`;
+  });
+  $("#images").html(content);
+  $("#change-image").prop("disabled", false);
+  $("#change-image").attr("placeholder", "Select an image from the list...");
+});
+
+$("#delete-profile").submit(function(event) {
+  event.preventDefault();
+
+  $.ajax({
+    method: "DELETE", 
+    url: "/services/profiles/user/{{user.name}}",
+  }).always(function() {
+    location.reload(true);
+  });
+
+});
+
+$("#update-profile").submit(function(event) {
+  event.preventDefault();
+ 
+  var image = $("#change-image").val();
+
+  $.ajax({
+    method: "PUT", 
+    url: "/services/profiles/user/{{user.name}}",
+    data: JSON.stringify({"image": image}),
+    contentType: "application/json; charset=utf-8",
+    dataType: "json",
+  }).always(function() {
+    location.reload(true);
+  });
+
+});
+
+</script>
+{% endblock %}

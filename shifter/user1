@@ -1,0 +1,6 @@
+{
+  "images": [{
+      "ENV": ["NERSC_JUPYTER_IMAGE=YES"],
+      "tag": ["image1-user:latest"]
+  }]
+}
