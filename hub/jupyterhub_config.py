@@ -631,6 +631,7 @@ c.JupyterHub.services = [{
     'name': 'profiles',
     'url': 'http://profiles:8888',
     'api_token': os.environ["PROFILES_API_TOKEN"],
+    'admin': True,
     'display': False
 }]
 
