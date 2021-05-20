@@ -20,6 +20,7 @@ services:
     environment:
       ANNOUNCEMENT_API_TOKEN_FILE: /run/secrets/announcement_api_token
       CONFIGPROXY_AUTH_TOKEN_FILE: /run/secrets/configproxy_auth_token
+      HUB_PROFILES_TOKEN_FILE: /run/secrets/hub_profiles_token
       IMAGES_API_TOKEN_FILE: /run/secrets/images_api_token
       PROFILE_MANAGER_API_TOKEN_FILE: /run/secrets/profile_manager_api_token
       PROFILES_API_TOKEN_FILE: /run/secrets/profiles_api_token
@@ -27,6 +28,7 @@ services:
     secrets:
       - announcement_api_token
       - configproxy_auth_token
+      - hub_profiles_token
       - images_api_token
       - profile_manager_api_token
       - profiles_api_token
@@ -43,9 +45,11 @@ services:
     environment:
       JUPYTERHUB_API_TOKEN_FILE: /run/secrets/profiles_api_token
       JUPYTERHUB_API_URL: http://jupyterhub:8081/hub/api
+      HUB_PROFILES_TOKEN_FILE: /run/secrets/hub_profiles_token
     image: profiles
     secrets:
       - profiles_api_token
+      - hub_profiles_token
   proxy:
     environment:
       CONFIGPROXY_AUTH_TOKEN_FILE: /run/secrets/configproxy_auth_token
@@ -63,6 +67,8 @@ secrets:
     file: secrets/announcement-api-token.txt
   configproxy_auth_token:
     file: secrets/configproxy-auth-token.txt
+  hub_profiles_token:
+    file: secrets/hub-profiles-token.txt
   images_api_token:
     file: secrets/images-api-token.txt
   profile_manager_api_token:

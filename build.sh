@@ -6,6 +6,7 @@ mkdir secrets
 cd secrets
 openssl rand -hex 32 > announcement-api-token.txt
 openssl rand -hex 32 > configproxy-auth-token.txt
+openssl rand -hex 32 > hub-profiles-token.txt
 openssl rand -hex 32 > images-api-token.txt
 openssl rand -hex 32 > profile-manager-api-token.txt
 openssl rand -hex 32 > profiles-api-token.txt
