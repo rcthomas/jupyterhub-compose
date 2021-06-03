@@ -13,6 +13,10 @@ openssl rand -hex 32 > profiles-api-token.txt
 openssl rand -hex 32 > shifter-api-token.txt
 cd ..
 
+echo Generating ssh creds...
+ssh-keygen -t rsa -N '' -C ca@localhost -f secrets/creds
+ssh-keygen -s secrets/creds -h -I localhost secrets/creds.pub
+
 echo Building announcement...
 cd announcement
 docker build -t announcement:latest .
@@ -33,6 +37,11 @@ cd images
 docker build -t images:latest .
 cd ..
 
+echo Building local...
+cd local
+docker build -t local:latest .
+cd ..
+
 echo Building profile-manager...
 cd profile-manager
 docker build -t profile-manager:latest .
@@ -41,6 +50,11 @@ cd ..
 echo Building profiles...
 cd profiles
 docker build -t profiles:latest .
+cd ..
+
+echo Building remote...
+cd remote
+docker build -t remote:latest .
 cd ..
 
 echo Building shifter...

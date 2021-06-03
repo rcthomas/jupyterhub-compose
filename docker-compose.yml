@@ -34,6 +34,11 @@ services:
       - profiles_api_token
     volumes: 
       - ${PWD}/hub/jupyterhub_config.py:/srv/jupyterhub/jupyterhub_config.py
+  local:
+    image: local
+    secrets:
+      - creds
+      - creds-cert.pub
   profile-manager:
     environment:
       JUPYTERHUB_API_TOKEN_FILE: /run/secrets/profile_manager_api_token
@@ -58,6 +63,10 @@ services:
       - "8000:8000"
     secrets:
       - configproxy_auth_token
+  remote:
+    image: remote
+    secrets:
+      - creds.pub
   shifter:
     image: shifter
     secrets:
@@ -65,6 +74,12 @@ services:
 secrets:
   announcement_api_token:
     file: secrets/announcement-api-token.txt
+  creds:
+    file: secrets/creds
+  creds.pub:
+    file: secrets/creds.pub
+  creds-cert.pub:
+    file: secrets/creds-cert.pub
   configproxy_auth_token:
     file: secrets/configproxy-auth-token.txt
   hub_profiles_token:
